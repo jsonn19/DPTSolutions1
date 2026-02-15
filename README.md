@@ -4,7 +4,7 @@
 
 **DPT (Develop, Plant, Thrive)** is a 2D roguelike farming simulation built in Python using Pygame.
 
-The project was developed around an overarching philosophical idea of impermanece, that being that nothing lasts forever. The game consists of the player selecting procedurally generated plants that eventually wither. Each plant produces an randomly generated value of fruit, that is tallied in the total score, and can be used to purchase other plants from the shop. Each plant has randomly generated values of output based on each tier (1-10). In essence, the roguelike nature of the game highlights the idea of impermanence, as no two games played will be the same. 
+The project was developed around an overarching philosophical idea of impermanence, that being that nothing lasts forever. The game consists of the player selecting procedurally generated plants that eventually wither. Each plant produces a randomly generated value of fruit, that is tallied in the total score, and can be used to purchase other plants from the shop. Each plant has randomly generated values of output based on each tier (1-10). In essence, the roguelike nature of the game highlights the idea of impermanence, as no two games played will be the same. 
 
 ---
 
@@ -53,8 +53,8 @@ Includes:
 ### 1. Clone the Repository
 
 ```bash
-git clone (insert link with new namE)
-cd DPTSolutions1
+git clone https://github.com/jsonn19/DPT-Develop-Plant-Thrive
+cd DPT-Develop-Plant-Thrive
 ```
 
 ### 2. Install Dependencies
