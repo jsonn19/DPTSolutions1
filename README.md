@@ -4,7 +4,7 @@
 
 **DPT (Develop, Plant, Thrive)** is a 2D roguelike farming simulation built in Python using Pygame.
 
-The project was developed around the philosophical concept of impermanence. The idea that nothing lasts forever. In the game, plants grow, produce fruit, and eventually wither. A roguelike, by definition, is a game where every run is different, setting the stage for impermanence. The game runs 
+The project was developed around the philosophical concept of impermanence. The idea that nothing lasts forever. In the game, plants grow, produce fruit, and eventually wither. A roguelike, by definition, is a game where every run is different, setting the stage for impermanence. The plants and tiers are randomly generated every time, and events occur in different orders via procedural generation. The events and disasters have the potential to ravage the entire grid, ending your run in an instant if you're in a later stage.
 
 Each run features:
 
@@ -18,7 +18,7 @@ Each run features:
 The goal? **Grow, adapt, survive, and thrive your garden into a high-yield ecosystem.**
 ---
 
-# 🌍 Design Philosophy
+# Design Philosophy
 
 DPT is intentionally designed so that:
 
@@ -27,13 +27,15 @@ Stability is fragile
 Growth invites risk
 Success accelerates collapse
 
-The player is forced to confront the idea that permanence is an illusion — directly tying gameplay mechanics to philosophical inspiration.
+The player is forced to face the idea that permanence is an illusion, directly tying gameplay mechanics to the inspiration.
+
+Some mechanics were inspired by other roguelike games such as Balatro for the shop, and a non-roguelike Terraria for runs with different tiering. 
 
 ---
 
-## 🚀 Features
+## Features
 
-### 🌿 Plant System
+### Plant System
 
 * Plants are divided into 10 tiers (1–10).
 * Higher tiers produce greater yield but cost more.
@@ -44,11 +46,11 @@ The player is forced to confront the idea that permanence is an illusion — dir
 * A purchase cost
 * All plant data is procedurally generated per run.
 
-### 🌦 Dynamic Weather & Events
+### Dynamic Weather & Events
 
 * DROUGHT (accelerated aging)
 * RAIN (lifespan boost)
-* HAILSTORM (random plant destruction)
+* HAILSTORM (random plant destruction, leaves dents where plants cannot be added)
 * LOCUSTS (yield reduction)
 * ECLIPSE (production pause)
 * METEOR (mass extinction + crater creation)
@@ -57,38 +59,38 @@ Includes:
 
 * Weighted event probability
 * Event severity scaling with score
-* 50% unreliable weather forecast system
+* Unreliable weather forecast system
 
-### 🛒 Progressive Shop System
+### Progressive Shop System
 
 * Tier unlock progression
 * Score-based tier advancement
 * Dynamic price inflation
 * Refreshable shop offerings
 
-### 💀 Survival Pressure
+### Survival Pressure
 
 * If garden becomes empty → countdown begins
-* Countdown shortens as score increases
+* Countdown shortens as score increases, increasing difficulty
 
 ---
 
-## 💾 Installation
+## Installation
 
-### 1️⃣ Clone the Repository
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/dpt-game.git
 cd dpt-game
 ```
 
-### 2️⃣ Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 pip install pygame
 ```
 
-### 3️⃣ Run the Game
+### 3. Run the Game
 
 ```bash
 python game.py
@@ -96,7 +98,7 @@ python game.py
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 dpt-game/
@@ -105,14 +107,14 @@ dpt-game/
 ├── func.py          # Core systems, classes, utilities
 ├── plants.csv       # Plant sprite manifest
 ├── assets/          # Images (plants + UI textures)
-└── README.md
+└── README.md        # README Markdown
 ```
 
 ---
 
-## 🎮 Usage
+## Usage
 
-### 🖱 Controls
+### Controls
 
 | Action          | Input                |
 | --------------- | -------------------- |
@@ -125,9 +127,9 @@ dpt-game/
 
 ---
 
-## ⚙ Game Mechanics
+## Game Mechanics
 
-### 🌱 Yield System
+### Yield System
 
 Each plant produces fruit continuously:
 
@@ -143,7 +145,7 @@ Modifiers include:
 
 ---
 
-### 🌡 Event Scaling
+### Event Scaling
 
 * Event frequency increases as score increases.
 * Drought severity increases at high scores.
@@ -152,7 +154,7 @@ Modifiers include:
 
 ---
 
-### 🏪 Tier Progression
+### Tier Progression
 
 Tier requirement formula:
 
@@ -164,7 +166,7 @@ Maximum Tier: **10**
 
 ---
 
-## 🔧 Configuration
+## Configuration
 
 Located in `func.py`:
 
@@ -184,7 +186,7 @@ You can modify:
 
 ---
 
-## 📦 Dependencies
+## Dependencies
 
 * Python 3.10+
 * `pygame`
@@ -201,27 +203,27 @@ pip install pygame
 
 ---
 
-## 🧪 Example Gameplay Loop
+## Example Gameplay Loop
 
 1. Start with Tier 1 seeds.
 2. Plant efficiently.
 3. Accumulate fruit.
 4. Buy higher-tier plants.
 5. Survive escalating weather chaos.
-6. Reach 1,000,000+ score.
+6. Go for a high score while you
 7. Avoid instant wipeout in late-game.
 
 ---
 
-## 🛠 Troubleshooting
+## Troubleshooting
 
-### ❌ Images Not Loading?
+### Images Not Loading?
 
 * Ensure `plants.csv` sprite paths are correct.
 * Confirm `assets/` directory exists.
 * Missing images will auto-generate colored placeholders.
 
-### ❌ Game Crashes on Start?
+### Game Crashes on Start?
 
 * Verify `pygame` is installed:
 
@@ -229,14 +231,14 @@ pip install pygame
   pip install pygame
   ```
 
-### ❌ Black Screen?
+### Black Screen?
 
 * Ensure your graphics drivers support SDL.
 * Try running in a standard Python interpreter (not IDLE).
 
 ---
 
-## 👥 Contributors
+## Contributors
 
-* Project Creator: DPT Solutions
+* DPT Solutions: Michio Babcock, Alexander Kozyrev, Jason Louie, Jacob Mann, Muhammand Safwan-ul-Haque
 * Built with VSCode using Pygame
