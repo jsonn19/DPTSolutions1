@@ -9,7 +9,7 @@ def main():
     """
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("DPT: Develop, Plant, Terraform")
+    pygame.display.set_caption("DPT: Develop, Plant, Thrive")
     clock = pygame.time.Clock()
     
     font_lg = pygame.font.SysFont("Verdana", 24, bold=True)
@@ -60,7 +60,7 @@ def main():
             btn_color = (60, 120, 60) if restart_rect.collidepoint(mouse_pos) else (40, 80, 40)
             pygame.draw.rect(screen, btn_color, restart_rect, border_radius=8)
             pygame.draw.rect(screen, GREEN, restart_rect, 2, border_radius=8)
-            draw_text(screen, "START NEW RUN", font_lg, WHITE, (SCREEN_WIDTH // 2 - 105, SCREEN_HEIGHT // 2 + 45))
+            draw_text(screen, "START NEW RUN", font_lg, WHITE, (SCREEN_WIDTH // 2 - 111, SCREEN_HEIGHT // 2 + 45))
             
             if clicked and restart_rect.collidepoint(mouse_pos):
                 plantfruit = 150.0  

@@ -1,10 +1,10 @@
-# 🌱 DPT: Develop, Plant, Terraform
+# DPT: Develop, Plant, Thrive
 
-## 📖 Introduction
+## Introduction
 
-**DPT (Develop, Plant, Terraform)** is a 2D roguelike-inspired farming simulation built in Python using Pygame.
+**DPT (Develop, Plant, Thrive)** is a 2D roguelike farming simulation built in Python using Pygame.
 
-The project was developed around the philosophical concept of impermanence. The idea that nothing lasts forever. In the game, plants grow, produce fruit, and eventually wither. Random catastrophic events can wipe out progress instantly, reinforcing the theme that stability is temporary.
+The project was developed around the philosophical concept of impermanence. The idea that nothing lasts forever. In the game, plants grow, produce fruit, and eventually wither. A roguelike, by definition, is a game where every run is different, setting the stage for impermanence. The game runs 
 
 Each run features:
 
@@ -15,7 +15,7 @@ Each run features:
 * Inflation mechanics
 * Survival pressure if the garden becomes empty
 
-The goal? **Grow, adapt, survive, and terraform your garden into a high-yield ecosystem.**
+The goal? **Grow, adapt, survive, and thrive your garden into a high-yield ecosystem.**
 ---
 
 # 🌍 Design Philosophy
