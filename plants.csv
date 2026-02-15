@@ -1,59 +1,29 @@
 Plant Name,Sprite Path
-plant0,/assets/plant0.png
-plant1,/assets/plant1.png
-plant2,/assets/plant2.png
-plant3,/assets/plant3.png
-plant4,/assets/plant4.png
-plant5,/assets/plant5.png
-plant6,/assets/plant6.png
-plant7,/assets/plant7.png
-plant8,/assets/plant8.png
-plant9,/assets/plant9.png
-plant10,/assets/plant10.png
-plant11,/assets/plant11.png
-plant12,/assets/plant12.png
-plant13,/assets/plant13.png
-plant14,/assets/plant14.png
-plant15,/assets/plant15.png
-plant16,/assets/plant16.png
-plant17,/assets/plant17.png
-plant18,/assets/plant18.png
-plant19,/assets/plant19.png
-plant20,/assets/plant20.png
-plant21,/assets/plant21.png
-plant22,/assets/plant22.png
-plant23,/assets/plant23.png
-plant24,/assets/plant24.png
-plant25,/assets/plant25.png
-plant26,/assets/plant26.png
-plant27,/assets/plant27.png
-plant28,/assets/plant28.png
-plant29,/assets/plant29.png
-plant30,/assets/plant30.png
-plant31,/assets/plant31.png
-plant32,/assets/plant32.png
-plant33,/assets/plant33.png
-plant34,/assets/plant34.png
-plant35,/assets/plant35.png
-plant36,/assets/plant36.png
-plant37,/assets/plant37.png
-plant38,/assets/plant38.png
-plant39,/assets/plant39.png
-plant40,/assets/plant40.png
-plant41,/assets/plant41.png
-plant42,/assets/plant42.png
-plant43,/assets/plant43.png
-plant44,/assets/plant44.png
-plant45,/assets/plant45.png
-plant46,/assets/plant46.png
-plant47,/assets/plant47.png
-plant48,/assets/plant48.png
-plant49,/assets/plant49.png
-plant50,/assets/plant50.png
-plant51,/assets/plant51.png
-plant52,/assets/plant52.png
-plant53,/assets/plant53.png
-plant54,/assets/plant54.png
-plant55,/assets/plant55.png
-plant56,/assets/plant56.png
-plant57,/assets/plant57.png
+Apple Tree,/assets/apple_tree.png
+Banana Palm,/assets/banana_palm.png
+Berry Bush,/assets/berry_bush.png
+Blue Daisy,/assets/blue_daisy.png
+Blue Marigold,/assets/blue_marigold.png
+Blue Tulip,/assets/blue_tulip.png
+Bush,/assets/bush.png
+Carrot,/assets/carrot.png
+Cherry Tree,/assets/cherry_tree.png
+Christmas Tree,/assets/christmas_tree.png
+Coconut Palm,/assets/coconut_palm.png
+Corn,/assets/corn.png
+Fir Tree,/assets/fir_tree.png
+Flower Bush,/assets/flower_bush.png
+Orange Marigold,/assets/orange_marigold.png
+Palm Tree,/assets/palm.png
+Pink Daisy,/assets/pink_daisy.png
+Pink Marigold,/assets/pink_marigold.png
+Pink Tulip,/assets/pink_tulip.png
+Red Daisy,/assets/red_daisy.png
+Red Tulip,/assets/red_tulip.png
+Sunflower,/assets/sunflower.png
+Oak Tree,/assets/tree.png
+Weird Flower,/assets/weird_flower.png
+White Daisy,/assets/white_daisy.png
+White Marigold,/assets/white_marigold.png
+White Tulip,/assets/white_tulip.png
+Yellow Marigold,/assets/yellow_marigold.png
