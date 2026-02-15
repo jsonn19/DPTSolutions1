@@ -4,14 +4,16 @@ import time
 import os
 import csv
 
-# --- Configuration ---
+
+# Configuration
 GRID_SIZE = 70
 GARDEN_ROWS = 8
 GARDEN_COLS = 8
 SCREEN_WIDTH = GARDEN_COLS * GRID_SIZE + 350
 SCREEN_HEIGHT = GARDEN_ROWS * GRID_SIZE + 100
 
-# Colors.
+
+# Colors
 UI_BG = (30, 30, 35)
 WHITE = (255, 255, 255)
 GOLD = (255, 215, 0)
@@ -19,21 +21,38 @@ GREEN = (100, 255, 100)
 RED = (255, 80, 80)
 BLUE = (80, 180, 255)
 
-# --- Number Formatting ---
+
+# Number Formatting
 def format_num(n):
     """
     Shortens large numbers for clean UI rendering.
-    """
-    n = int(n)
-    if n < 10000:
-        return str(n)
-    elif n < 1000000:
-        return f"{n // 1000}K"
-    else:
-        return f"{n // 1000000}M"
 
-# --- Procedural Generation & Data Loading ---
+    Args:
+        n (float/int): The numerical value to format.
+
+    Returns:
+        str: A shortened string representation of the number (e.g. 150, 45K, 1.24M).
+    """
+    n = float(n)
+    if n < 10000:
+        return str(int(n))
+    elif n < 1000000:
+        return f"{int(n) // 1000}K"
+    else:
+        return f"{n / 1000000:.2f}M"
+
+
+# Procedural Generation & Data Loading
 def load_plant_manifest(filepath="plants.csv"):
+    """
+    Reads the static plant manifest CSV containing names and sprite paths.
+
+    Args:
+        filepath (str): The relative path to the CSV file.
+
+    Returns:
+        list: A list of tuples formatted as (Plant Name, Sprite Path).
+    """
     manifest = []
     try:
         with open(filepath, mode='r', encoding='utf-8') as f:
@@ -49,7 +68,15 @@ def load_plant_manifest(filepath="plants.csv"):
         
     return manifest
 
+
 def generate_run_data():
+    """
+    Reads the plant manifest, shuffles it, and generates randomized stats and tiers.
+    Applies a variance modifier to ensure plants in the same tier have unique values.
+
+    Returns:
+        dict: A nested dictionary mapping plant names to their procedural stats.
+    """
     manifest = load_plant_manifest()
     random.shuffle(manifest)
     
@@ -85,8 +112,18 @@ def generate_run_data():
             
     return run_data
 
-# --- Asset Loading ---
+
+# Asset Loading
 def load_assets(plant_data):
+    """
+    Loads all required images into memory, substituting colored squares if missing.
+
+    Args:
+        plant_data (dict): The randomized plant dictionary containing sprite paths.
+
+    Returns:
+        dict: A nested dictionary containing loaded pygame surfaces for plants and UI.
+    """
     def get_img(name, size):
         try:
             img = pygame.image.load(name).convert_alpha()
@@ -111,9 +148,23 @@ def load_assets(plant_data):
         
     return assets
 
-# --- Classes ---
+
+# Classes
 class Plant:
+    """
+    Represents a single plant actively growing on the grid.
+    """
+    
     def __init__(self, p_type, x, y, plant_data):
+        """
+        Initializes a new plant with stats retrieved from the current run's data.
+
+        Args:
+            p_type (str): The unique string identifier for the plant.
+            x (int): The grid X coordinate.
+            y (int): The grid Y coordinate.
+            plant_data (dict): The randomized procedural stat dictionary for the run.
+        """
         self.type = p_type
         data = plant_data[p_type]
         self.base_rate = data['rate']
@@ -121,27 +172,41 @@ class Plant:
         
         self.age = 0.0
         self.last_update_time = time.time()
-        
         self.last_harvest = time.time()
+        
         self.pos = (x, y)
         self.drought_mult = 1.0
         self.locust_mult = 1.0
-        self.paused = False
+        self.fruit_paused = False
 
     def _update_age(self):
+        """
+        Calculates delta time and applies modifiers fairly based on active events.
+        """
         now = time.time()
         dt = now - self.last_update_time
         self.last_update_time = now
         
-        if not self.paused:
-            self.age += dt * self.drought_mult
+        self.age += dt * self.drought_mult
 
     def is_dead(self):
+        """
+        Checks if the plant has exceeded its lifespan.
+
+        Returns:
+            bool: True if the plant's age exceeds its lifespan, False otherwise.
+        """
         self._update_age()
         return self.age > self.lifespan
 
     def get_yield(self):
-        if self.paused:
+        """
+        Calculates how much fruit the plant has generated since the last harvest.
+
+        Returns:
+            float: The calculated yield amount based on base rate and active multipliers.
+        """
+        if self.fruit_paused:
             self.last_harvest = time.time()
             return 0
             
@@ -152,11 +217,25 @@ class Plant:
         return produced
 
     def get_life_ratio(self):
+        """
+        Calculates the percentage of the plant's life that has passed.
+
+        Returns:
+            float: A value between 0.0 (new) and 1.0 (dead).
+        """
         self._update_age()
         return max(0.0, min(1.0, self.age / self.lifespan))
 
+
 class EventManager:
+    """
+    Manages randomized positive and negative events that impact the garden.
+    """
+    
     def __init__(self):
+        """
+        Initializes event timers, forecasting models, and event variables.
+        """
         self.current_event = None
         self.warning_event = None
         self.event_start = 0
@@ -167,13 +246,15 @@ class EventManager:
         self.pool = ["DROUGHT", "RAIN", "HAILSTORM", "LOCUSTS", "ECLIPSE", "METEOR"]
         self.weights = [60, 50, 40, 30, 20, 10]
         
-        # Roll the first upcoming event and generate its forecast
         self.upcoming_event = random.choices(self.pool, weights=self.weights, k=1)[0]
         self.forecast_text = ""
         self.generate_forecast()
 
     def generate_forecast(self):
-        """Creates a prediction for the player. 50% Unknown, 40% True, 10% False"""
+        """
+        Creates a prediction of the next event for the player.
+        Calculates odds at 50% Unknown, 40% True, and 10% False.
+        """
         roll = random.random()
         if roll < 0.50:
             self.forecast_text = "Unknown"
@@ -184,13 +265,20 @@ class EventManager:
             self.forecast_text = random.choice(wrong_pool)
 
     def update(self, plants, craters, total_score):
+        """
+        Progresses the event timeline and triggers or resolves events based on the timer.
+
+        Args:
+            plants (dict): Dictionary of currently active plants on the grid.
+            craters (dict): Dictionary mapping hazard locations to expiration times.
+            total_score (float): The overall score used to calculate event difficulty.
+        """
         now = time.time()
         
         if self.meteor_flash_alpha > 0:
             self.meteor_flash_alpha = max(0, self.meteor_flash_alpha - 5)
         
         if not self.warning_event and not self.current_event and now > self.next_check:
-            # Trigger the pre-rolled upcoming event
             self.warning_event = self.upcoming_event
             self.event_start = now + 5.0
             
@@ -205,13 +293,19 @@ class EventManager:
             self.current_event = None
             self.next_check = now + self.get_next_event_delay(total_score)
             
-            # Roll the NEXT event and update the forecast for the peaceful period
             self.upcoming_event = random.choices(self.pool, weights=self.weights, k=1)[0]
             self.generate_forecast()
 
         self.apply_continuous_events(plants, total_score)
 
     def apply_instant_events(self, plants, craters):
+        """
+        Executes events that trigger a one-time immediate effect upon starting.
+
+        Args:
+            plants (dict): Dictionary of currently active plants on the grid.
+            craters (dict): Dictionary mapping hazard locations to expiration times.
+        """
         now = time.time()
         if self.current_event == "METEOR":
             plants.clear()
@@ -239,6 +333,15 @@ class EventManager:
                 p.lifespan += 5
     
     def get_next_event_delay(self, total_score):
+        """
+        Calculates the cooldown time between events, shrinking as the score grows.
+
+        Args:
+            total_score (float): The player's overall cumulative score.
+
+        Returns:
+            float: The calculated cooldown delay in seconds.
+        """
         base_delay = 60.0
         min_delay = 15.0
         reductions = total_score // 50000 
@@ -246,29 +349,88 @@ class EventManager:
         return max(min_delay, calculated_delay)
 
     def apply_continuous_events(self, plants, total_score):
-        severity = 1.0 + ((total_score // 100000) * 0.5)
+        """
+        Applies modifiers to all active plants while a continuous event is running.
+
+        Args:
+            plants (dict): Dictionary of currently active plants on the grid.
+            total_score (float): The player's overall score used to scale difficulty.
+        """
+        drought_score = min(total_score, 500000)
+        drought_severity = 1.0 + ((drought_score // 100000) * 0.5)
+        
         locust_mult = max(0.0, 1.0 - (total_score / 500000.0))
         
         for p in plants.values():
-            p.drought_mult = 3.0 * severity if self.current_event == "DROUGHT" else 1.0
+            p.drought_mult = 3.0 * drought_severity if self.current_event == "DROUGHT" else 1.0
             p.locust_mult = locust_mult if self.current_event == "LOCUSTS" else 1.0
-            p.paused = (self.current_event == "ECLIPSE")
+            p.fruit_paused = (self.current_event == "ECLIPSE")
 
     def clear_events(self, plants):
+        """
+        Resets all continuous event modifiers on active plants back to their default states.
+
+        Args:
+            plants (dict): Dictionary of currently active plants on the grid.
+        """
         for p in plants.values():
             p.drought_mult = 1.0
             p.locust_mult = 1.0
-            p.paused = False
+            p.fruit_paused = False
+
 
 class Shop:
+    """
+    Manages plant purchases, storefront UI data, and inflation mechanics.
+    """
+    
     def __init__(self, plant_data):
+        """
+        Initializes the shop with the generated procedural data for the current run.
+
+        Args:
+            plant_data (dict): The randomized plant dictionary for the run.
+        """
         self.is_open = False
         self.tier = 1
         self.plant_data = plant_data
         self.offerings = []
+        self.last_refresh = time.time()
+        self.refresh_interval = 60.0
         self.refresh_offerings()
 
+    def get_refresh_interval(self, total_score):
+        """
+        Calculates the shop auto-refresh interval, shrinking as the score grows.
+
+        Args:
+            total_score (float): The player's overall cumulative score.
+
+        Returns:
+            float: The calculated refresh interval in seconds.
+        """
+        base_interval = 60.0
+        min_interval = 10.0
+        reductions = total_score // 50000
+        calculated_interval = base_interval - (reductions * 5.0)
+        return max(min_interval, calculated_interval)
+
+    def update(self, total_score):
+        """
+        Automatically refreshes the shop offerings based on the dynamically scaled refresh interval.
+
+        Args:
+            total_score (float): The player's overall cumulative score.
+        """
+        self.refresh_interval = self.get_refresh_interval(total_score)
+        if time.time() - self.last_refresh >= self.refresh_interval:
+            self.refresh_offerings()
+
     def refresh_offerings(self):
+        """
+        Pulls a new selection of plants from the currently unlocked tiers to sell.
+        """
+        self.last_refresh = time.time()
         available = [p for p, d in self.plant_data.items() if d['tier'] <= self.tier]
         highest_tier_plants = [p for p in available if self.plant_data[p]['tier'] == self.tier]
         
@@ -280,6 +442,12 @@ class Shop:
             self.offerings.append(random.choice(available))
 
     def check_progression(self, score):
+        """
+        Advances the player to the next plant tier if they hit the score threshold.
+
+        Args:
+            score (float): The player's overall cumulative score.
+        """
         old_tier = self.tier
         
         while self.tier < 10:
@@ -293,14 +461,44 @@ class Shop:
             self.refresh_offerings()
 
     def get_inflation_multiplier(self, total_score):
+        """
+        Calculates how heavily plant prices should be taxed based on the player's progress.
+
+        Args:
+            total_score (float): The player's overall cumulative score.
+
+        Returns:
+            float: The inflation multiplier percentage.
+        """
         inflation_steps = total_score // 50000
         return 1.0 + (inflation_steps * 0.10)
 
     def get_adjusted_cost(self, plant_name, total_score):
+        """
+        Calculates the final cost of a plant after applying global inflation.
+
+        Args:
+            plant_name (str): The unique string identifier for the plant.
+            total_score (float): The player's overall cumulative score.
+
+        Returns:
+            int: The dynamically calculated cost of the plant.
+        """
         base_cost = self.plant_data[plant_name]['cost']
         multiplier = self.get_inflation_multiplier(total_score)
         return int(base_cost * multiplier)
 
+
 def draw_text(surface, text, font, color, pos):
+    """
+    Renders standard text onto a Pygame surface.
+
+    Args:
+        surface (pygame.Surface): The target surface to draw upon.
+        text (str): The string of text to render.
+        font (pygame.font.Font): The Pygame font object to use for styling.
+        color (tuple): RGB tuple defining the text color.
+        pos (tuple): (X, Y) coordinates indicating where to place the top-left corner of the text.
+    """
     render = font.render(text, True, color)
     surface.blit(render, pos)

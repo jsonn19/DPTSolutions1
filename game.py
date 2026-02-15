@@ -3,6 +3,7 @@ import random
 import time
 from func import *
 
+
 def main():
     """
     The main execution loop for the game, handling inputs, rendering, and state management.
@@ -18,12 +19,12 @@ def main():
     plant_data = generate_run_data()
     assets = load_assets(plant_data)
 
-    # --- Run State Variables ---
+    # Run State Variables
     plantfruit = 150.0  
     total_score = 0.0   
     reroll_cost = 50.0  
     plants = {} 
-    craters = {}  # Tracks (x, y): expiration_time for craters
+    craters = {} 
     
     inventory = {p: 0 for p in plant_data.keys()}
     t1_plants = [p for p, d in plant_data.items() if d['tier'] == 1]
@@ -41,7 +42,7 @@ def main():
         mouse_pos = pygame.mouse.get_pos()
         clicked = False
 
-        # --- EVENT HANDLING ---
+        # Event Handling
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -50,7 +51,7 @@ def main():
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
                 selected_seed = None
 
-        # --- GAME OVER SCREEN ---
+        # Game Over Screen
         if game_over:
             screen.fill((20, 20, 25))
             draw_text(screen, "GAME OVER - THE GARDEN WITHERED", font_lg, RED, (SCREEN_WIDTH // 2 - 240, SCREEN_HEIGHT // 2 - 60))
@@ -60,7 +61,7 @@ def main():
             btn_color = (60, 120, 60) if restart_rect.collidepoint(mouse_pos) else (40, 80, 40)
             pygame.draw.rect(screen, btn_color, restart_rect, border_radius=8)
             pygame.draw.rect(screen, GREEN, restart_rect, 2, border_radius=8)
-            draw_text(screen, "START NEW RUN", font_lg, WHITE, (SCREEN_WIDTH // 2 - 111, SCREEN_HEIGHT // 2 + 45))
+            draw_text(screen, "START NEW RUN", font_lg, WHITE, (SCREEN_WIDTH // 2 - 105, SCREEN_HEIGHT // 2 + 45))
             
             if clicked and restart_rect.collidepoint(mouse_pos):
                 plantfruit = 150.0  
@@ -85,9 +86,10 @@ def main():
             clock.tick(60)
             continue
 
-        # --- UPDATE STAGE ---
+        # Update Stage
         events.update(plants, craters, total_score)
         shop.check_progression(total_score)
+        shop.update(total_score)
         
         now = time.time()
         expired_craters = [pos for pos, exp in craters.items() if now > exp]
@@ -119,7 +121,7 @@ def main():
         else:
             empty_start_time = None
 
-        # --- INTERACTION STAGE ---
+        # Interaction Stage
         owned_plants = [p for p, qty in inventory.items() if qty > 0]
         ui_x = GARDEN_COLS * GRID_SIZE 
 
@@ -164,7 +166,7 @@ def main():
                         if inventory[selected_seed] == 0:
                             selected_seed = None 
 
-        # --- RENDER STAGE ---
+        # Render Stage
         screen.fill((20, 20, 25))
 
         if events.current_event == "RAIN":
@@ -233,7 +235,7 @@ def main():
         pygame.draw.rect(screen, shop_btn_color, (ui_x + 10, 230, 330, 40), border_radius=5)
         draw_text(screen, "TOGGLE SHOP", font_lg, WHITE, (ui_x + 80, 235))
 
-        # --- SHOP & FORECAST MENU TOGGLE ---
+        # Shop & Forecast Menu Toggle
         if shop.is_open:
             pygame.draw.rect(screen, (50, 50, 60), (ui_x + 10, 280, 330, 300), border_radius=5)
             for i, p_name in enumerate(shop.offerings):
@@ -250,15 +252,17 @@ def main():
 
             pygame.draw.rect(screen, (80, 80, 120), (ui_x + 20, 535, 310, 35), border_radius=5)
             draw_text(screen, f"Refresh Offerings ({format_num(reroll_cost)} Fruit)", font_sm, WHITE, (ui_x + 60, 545))
+            
+            time_until_refresh = max(0, shop.refresh_interval - (time.time() - shop.last_refresh))
+            draw_text(screen, f"Auto-refresh in: {time_until_refresh:.1f}s", font_sm, (150, 150, 150), (ui_x + 90, 580))
+            
         else:
-            # Render Forecast Panel instead of Shop
             pygame.draw.rect(screen, (35, 40, 45), (ui_x + 10, 280, 330, 150), border_radius=5)
             draw_text(screen, "WEATHER FORECAST", font_lg, BLUE, (ui_x + 20, 290))
             
             f_color = (150, 150, 150) if events.forecast_text == "Unknown" else GOLD
             draw_text(screen, f"Predicting: {events.forecast_text}", font_sm, f_color, (ui_x + 20, 335))
             
-            # Replaced exact numerical countdown with atmospheric flavor text
             if not events.warning_event and not events.current_event:
                 draw_text(screen, "Monitoring atmosphere...", font_sm, (150, 150, 150), (ui_x + 20, 370))
             else:
@@ -267,17 +271,15 @@ def main():
         if selected_seed:
             screen.blit(assets["plants"][selected_seed], (mouse_pos[0] - 20, mouse_pos[1] - 20))
 
-        # --- RENDER TOP-RIGHT OVERLAYS ---
+        # Render Top-Right Overlays
         if events.meteor_flash_alpha > 0:
             flash_surface = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
             flash_surface.fill((255, 0, 0, events.meteor_flash_alpha))
             screen.blit(flash_surface, (0, 0))
 
-        # The death timer drawn absolute last so it rests aggressively on top of the UI
         if empty_start_time is not None:
             time_left = empty_time_limit - (time.time() - empty_start_time)
             
-            # Positioned strictly within the top-right of the garden grid
             timer_x = (GARDEN_COLS * GRID_SIZE) - 220
             timer_y = 10
             
@@ -290,6 +292,7 @@ def main():
         clock.tick(60)
 
     pygame.quit()
+
 
 if __name__ == "__main__":
     main()
